@@ -1,1 +1,1 @@
-Teste de commit no reporitorio
+Teste de commit no repositorio
