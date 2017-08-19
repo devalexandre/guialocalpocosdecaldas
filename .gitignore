@@ -1,5 +1,6 @@
 /vendor
 /.idea
+/.intel
 Homestead.json
 Homestead.yaml
 .env
