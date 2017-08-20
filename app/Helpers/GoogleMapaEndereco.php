@@ -35,7 +35,8 @@ class GoogleMapaEndereco {
 
 		//valida se o endereço retornado é valido
 		if($this->pais != 'br' || $this->uf != strtofirst($uf) || $this->cep != $cep) {
-			
+			$this->latitude = $endereco->geometry->location->lat;	
+			$this->longitude = $endereco->geometry->location->lng;	
 		}
 	}
 	public function getPais() {

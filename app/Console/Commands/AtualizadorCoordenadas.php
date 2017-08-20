@@ -34,12 +34,12 @@ class AtualizadorCoordenadas extends Command
 
         $http = new \GuzzleHttp\Client();
         $erro = 0;
-        $validarEndereco = 0;
+        $validarEndereco = false;
 
 
         $this->info( 'Processo iniciado' );
         foreach ($enderecos as $endereco) {
-            $validarEndereco = 0;
+            $validarEndereco = false;
 
             echo $endereco->id . ' - ';
 
@@ -47,34 +47,50 @@ class AtualizadorCoordenadas extends Command
                 $keys->offsetGet($pagina - 1) , [
                 'query' => ['address' => "{$endereco->cidade},{$endereco->numero} {$endereco->rua} {$endereco->cep}"],
                 'timeout' => 2
-            ]))->getBody());        
+            ]))->getBody());     
+
+
+               
 
 
             if($coordenadas->status != 'OK') {
 
                 $this->error($coordenadas->status);
+                $erro++;
 
-                if($erro >= 5) {
-                    $this->erro = '';
+                if($erro >= 10) {
+                    $this->error('Processo cancelado por mais de 10 erros concecutivos.');
                     exit;
                 }
 
                 continue;
             }
 
+            $erro = 0;
+
             foreach ($coordenadas->results as $coordenada) {
 
                 $dadosCoordenadas = new \App\Helpers\GoogleMapaEndereco($coordenada, $endereco->uf, $endereco->cep);
                 
-                if($dadosCoordenadas->getLatitude() != '' && $dadosCoordenadas->getLongitude() != '') {
-                    
+                if(!empty($dadosCoordenadas->getLatitude()) && !empty($dadosCoordenadas->getLongitude())) {
                     $this->info('OK');
-                    continue;        
+                    $validarEndereco  = true;
+
+                    //atualiza o endereço no banco de dados
+                    Endereco::where('id','=', $endereco->id)->update([
+                        'latitude' => $dadosCoordenadas->getLatitude(),
+                        'longitude' => $dadosCoordenadas->getLongitude()
+                    ]);
+
+
+                    break;       
                 }
             
             }
 
-            $this->error('Endereco não encontrado.');
+            if($validarEndereco ==  false) {
+                $this->error('Endereco não encontrado.');
+            }
 
         }
 
