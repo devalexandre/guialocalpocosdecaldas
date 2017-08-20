@@ -50,9 +50,6 @@ class AtualizadorCoordenadas extends Command
             ]))->getBody());     
 
 
-               
-
-
             if($coordenadas->status != 'OK') {
 
                 $this->error($coordenadas->status);

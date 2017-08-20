@@ -89,9 +89,19 @@
 	        height: 100%;
 	        width: 100%;
     	}
+
+    	.fullscreen{
+    		margin: 0; 
+    		position: fixed;
+    		top: 10px;
+    		right: 10px;
+    		z-index: 1000;
+    	}
     </style>
 </head>
 <body>
+
+	<button onclick="toggleFullScreen()" class="btn-floating fullscreen waves-effect waves-light light-green accent-4"><i class="fa fa-arrows-alt"></i></button>
 
 	<div class="formulario">
 		<div class="conteudo">
@@ -130,18 +140,41 @@
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
 <script>
-		function initMap() {
-	 	var position = {lat: -21.7857201, lng: -46.5688921};
-	  	var map = new google.maps.Map(document.getElementById('map'), {
-	    	zoom: 17,
-	        center: position,
-	        mapTypeId: 'roadmap'
-	    });
-	    var marker = new google.maps.Marker({
-	    		position: position,
-	        	map: map
-	    	});
+
+	function toggleFullScreen() {
+		if (!document.fullscreenElement &&    // alternative standard method
+	      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+	    if (document.documentElement.requestFullscreen) {
+	      document.documentElement.requestFullscreen();
+	    } else if (document.documentElement.msRequestFullscreen) {
+	      document.documentElement.msRequestFullscreen();
+	    } else if (document.documentElement.mozRequestFullScreen) {
+	      document.documentElement.mozRequestFullScreen();
+	    } else if (document.documentElement.webkitRequestFullscreen) {
+	      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
 	    }
+	  } else {
+	    if (document.exitFullscreen) {
+	      document.exitFullscreen();
+	    } else if (document.msExitFullscreen) {
+	      document.msExitFullscreen();
+	    } else if (document.mozCancelFullScreen) {
+	      document.mozCancelFullScreen();
+	    } else if (document.webkitExitFullscreen) {
+	      document.webkitExitFullscreen();
+	    }
+	  }
+	}
+
+
+	var map;
+    function initMap() {
+    	map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -21.813248, lng: -46.6315377},
+          fullscreenControl: false,
+          zoom: 13
+        });
+    }
 </script>
 <script async defer  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApjxPfyiREU8MCuWfypkzOiS8qYlG3Xqg&callback=initMap">
 </script> 

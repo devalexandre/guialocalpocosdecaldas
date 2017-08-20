@@ -11,6 +11,10 @@
 |
 */
 
+
+//pagina inicial
 $app->get('/', function () use ($app) {
-    return $app->version();
+    return view('index');
 });
+
+$app->post('empresa/add', 'Empresa@add');
